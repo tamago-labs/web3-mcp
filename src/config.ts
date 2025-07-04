@@ -37,20 +37,12 @@ export function validateEnvironment(): void {
 
         if (!hasAgentMode) {
             console.error(`❌ AGENT_MODE is not set. Use --agent_mode=<mode>`);
-            console.error(`Available modes: portfolio-snapshot, gas-optimization-helper, whale-monitor, token-intelligence, transaction-tracker, nft-collection-insights`);
+            console.error(`Available modes: portfolio-snapshot, gas-optimization-helper, whale-monitor, token-intelligence, transaction-tracker, nft-collection-insights, bitcoin-wallet-analyzer, bitcoin-transaction-tracker, bitcoin-network-insights`);
             throw new Error('Agent mode is required');
         } else {
             console.error(`✅ Agent Mode: ${args.agent_mode}`);
         }
  
-        // Check Nodit API key
-        const noditApiKey = process.env.NODIT_API_KEY;
-        if (noditApiKey) {
-            console.error(`✅ Nodit API Key: Configured`);
-        } else {
-            console.error(`⚠️  Nodit API Key: Not set (use NODIT_API_KEY environment variable)`);
-        }
-
     } catch (error) {
         console.error('❌ Invalid environment configuration:', error);
         throw error;
