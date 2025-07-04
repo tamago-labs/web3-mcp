@@ -3,7 +3,7 @@ import { type McpTool } from "../../types";
 
 export const WhaleGetLargeTransfersTool: McpTool = {
     name: "whale_get_large_transfers",
-    description: "Monitor large token transfers (whale movements) using Nodit MCP integration",
+    description: "Monitor large token transfers (whale movements) using cached Nodit API integration",
     schema: {
         token_symbol: z.string().optional().describe("Token symbol to monitor (e.g., USDC, WETH)"),
         contract_address: z.string().optional().describe("Token contract address"),
@@ -17,8 +17,8 @@ export const WhaleGetLargeTransfersTool: McpTool = {
         return {
             status: "instruction",
             task: "whale_activity_monitor",
-            message: "🐋 Whale Activity Monitor - Use Nodit MCP Tools",
-            description: "Track large token transfers and whale movements using Nodit MCP server",
+            message: "🐋 Whale Activity Monitor - Cached API Approach",
+            description: "Track large token transfers efficiently using cached Nodit API specifications",
             
             overview: {
                 action: "Monitor large token transfers above threshold",
@@ -29,35 +29,35 @@ export const WhaleGetLargeTransfersTool: McpTool = {
                 whale_threshold: `$${min_usd_amount.toLocaleString()}+`
             },
 
-            next_steps: [
+            execution_plan: [
                 ...(token_symbol && !contract_address ? [{
                     step: 1,
                     action: "Resolve token contract address",
-                    tool: "symbol_converter", 
+                    tool: "symbol_converter",
                     parameters: {
                         symbol: token_symbol,
                         chain: chain,
                         verified_only: true
                     },
                     fallback: {
-                        tool: "call_nodit_api",
-                        operationId: "searchTokenContractMetadataByKeyword",
+                        tool: "cached_nodit_api",
                         parameters: {
+                            operation_id: "searchTokenContractMetadataByKeyword",
                             protocol: chain,
                             network: "mainnet",
-                            requestBody: { keyword: token_symbol }
+                            request_body: { keyword: token_symbol, page: 1, rpp: 10 }
                         }
                     }
                 }] : []),
                 {
                     step: token_symbol && !contract_address ? 2 : 1,
-                    action: "Get token transfers",
-                    tool: "call_nodit_api",
+                    action: "Get token transfers in timeframe",
+                    tool: "cached_nodit_api",
                     parameters: {
+                        operation_id: "getTokenTransfersByContract",
                         protocol: chain,
                         network: "mainnet",
-                        operationId: "getTokenTransfersByContract",
-                        requestBody: {
+                        request_body: {
                             contractAddress: contract_address || "resolved_from_step_1",
                             fromDate: new Date(Date.now() - (hours * 3600 * 1000)).toISOString(),
                             toDate: new Date().toISOString(),
@@ -65,72 +65,70 @@ export const WhaleGetLargeTransfersTool: McpTool = {
                             rpp: 1000
                         }
                     },
-                    expected_result: "List of all token transfers in the specified timeframe"
+                    purpose: "Get all token transfers in the specified timeframe"
                 },
                 {
                     step: token_symbol && !contract_address ? 3 : 2,
-                    action: "Get token price",
-                    tool: "call_nodit_api",
+                    action: "Get token price for USD calculation",
+                    tool: "cached_nodit_api", 
                     parameters: {
+                        operation_id: "getTokenPricesByContracts",
                         protocol: chain,
                         network: "mainnet",
-                        operationId: "getTokenPricesByContracts",
-                        requestBody: {
-                            contracts: [contract_address || "resolved_contract"]
+                        request_body: {
+                            contractAddresses: [contract_address || "resolved_contract"],
+                            currency: "USD"
                         }
                     },
-                    purpose: "Convert transfer amounts to USD values"
+                    purpose: "Get current token price to calculate USD values"
                 }
             ],
 
-            process_results: {
-                filter_whales: [
-                    "Convert raw amounts using token decimals from contract metadata",
-                    `Calculate USD value: (amount * token_price)`,
-                    `Filter transfers >= $${min_usd_amount.toLocaleString()}`,
+            whale_analysis: {
+                filter_process: [
+                    "Extract token decimals from contract metadata",
+                    "Convert raw transfer amounts using: formatted_amount = raw_amount / (10^decimals)",
+                    "Calculate USD value: formatted_amount * token_price",
+                    `Filter transfers where USD value >= $${min_usd_amount.toLocaleString()}`,
                     "Sort by USD value (largest first)",
-                    "Identify unique whale addresses"
+                    "Identify unique whale addresses and patterns"
                 ],
-                whale_analysis: [
-                    "Categorize by transfer direction (inbound/outbound)",
-                    "Detect accumulation vs distribution patterns",
-                    "Identify exchange vs wallet transfers",
-                    "Calculate total whale volume"
+                pattern_detection: [
+                    "Categorize by direction: large inflows vs outflows",
+                    "Detect accumulation patterns (multiple large purchases)",
+                    "Identify distribution events (large sells to multiple addresses)",
+                    "Flag exchange interactions vs wallet-to-wallet transfers",
+                    "Calculate whale concentration metrics"
                 ]
             },
 
-            expected_final_format: {
-                filters: {
-                    token: token_symbol || contract_address,
-                    chain,
-                    min_usd_amount,
-                    timeframe: `${hours}h`
+            expected_output: {
+                summary: {
+                    timeframe: `${hours}h`,
+                    total_whale_transfers: "Count of transfers >= threshold",
+                    total_volume_usd: "Total USD value of whale activity",
+                    largest_transfer: "Largest single transfer details",
+                    unique_whales: "Number of unique whale addresses",
+                    avg_transfer_size: "Average whale transfer size"
                 },
-                timestamp: "ISO timestamp",
                 whale_transfers: [
                     {
                         transaction_hash: "From transfer data",
-                        from_address: "From transfer data",
-                        to_address: "From transfer data",
-                        amount: "Raw token amount",
-                        amount_formatted: "Human readable amount using decimals",
-                        usd_value: "Calculated using token price",
-                        block_number: "From transfer data",
-                        timestamp: "From transfer data"
+                        timestamp: "ISO timestamp", 
+                        from_address: "Sender address",
+                        to_address: "Recipient address",
+                        amount_raw: "Raw token amount",
+                        amount_formatted: "Human readable amount",
+                        usd_value: "USD value using current price",
+                        block_number: "Block number",
+                        whale_score: "Size percentile vs other transfers"
                     }
                 ],
-                summary: {
-                    total_whale_transfers: "Count of transfers above threshold",
-                    total_volume_usd: "Total USD value of whale transfers",
-                    largest_transfer_usd: "Largest single transfer value",
-                    unique_whale_addresses: "Count of unique whale addresses"
+                whale_insights: {
+                    market_sentiment: "Accumulation/Distribution/Mixed",
+                    whale_behavior: "Analysis of whale patterns",
+                    risk_factors: "Concentration and timing risks"
                 }
-            },
-
-            cost_optimization: {
-                instruction_efficiency: "Pre-structured whale analysis vs manual API exploration",
-                nodit_mcp_coordination: "Single instruction set vs multiple API interpretations",
-                token_savings: "90% reduction in whale monitoring overhead"
             }
         };
     }
@@ -138,7 +136,7 @@ export const WhaleGetLargeTransfersTool: McpTool = {
 
 export const WhaleMonitorAddressTool: McpTool = {
     name: "whale_monitor_address",
-    description: "Monitor specific whale address activity using Nodit MCP integration",
+    description: "Monitor specific whale address activity using cached Nodit API integration",
     schema: {
         address: z.string().describe("Whale address to monitor"),
         chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to monitor"),
@@ -150,145 +148,139 @@ export const WhaleMonitorAddressTool: McpTool = {
         return {
             status: "instruction",
             task: "whale_address_monitor", 
-            message: "🔍 Whale Address Monitor - Use Nodit MCP Tools",
-            description: "Track specific whale address activity and token movements",
+            message: "🔍 Whale Address Monitor - Cached API Approach",
+            description: "Track specific whale address activity efficiently using cached API specs",
             
             overview: {
                 action: "Monitor all activity from specific whale address",
                 target_address: address,
                 chain,
                 timeframe: `${hours} hours`,
-                analysis_scope: "Token transfers, transactions, portfolio changes"
+                analysis_scope: "Token transfers, portfolio changes, trading patterns"
             },
 
-            next_steps: [
+            execution_plan: [
                 {
                     step: 1,
                     action: "Get whale token transfers",
-                    tool: "call_nodit_api",
+                    tool: "cached_nodit_api",
                     parameters: {
+                        operation_id: "getTokenTransfersByAccount",
                         protocol: chain,
                         network: "mainnet",
-                        operationId: "getTokenTransfersByAccount",
-                        requestBody: {
-                            account: address,
+                        request_body: {
+                            accountAddress: address,
+                            relation: "both",
                             fromDate: new Date(Date.now() - (hours * 3600 * 1000)).toISOString(),
                             toDate: new Date().toISOString(),
                             page: 1,
-                            rpp: 1000
+                            rpp: 1000,
+                            withZeroValue: false
                         }
                     },
-                    expected_result: "All token transfers (in/out) for the whale address"
+                    purpose: "Get all token transfers (in/out) for the whale address"
                 },
                 {
                     step: 2,
-                    action: "Get whale transactions",
-                    tool: "call_nodit_api",
+                    action: "Get current portfolio snapshot",
+                    tool: "cached_nodit_api",
                     parameters: {
+                        operation_id: "getTokensOwnedByAccount",
                         protocol: chain,
                         network: "mainnet",
-                        operationId: "getTransactionsByAccount",
-                        requestBody: {
+                        request_body: {
                             account: address,
-                            fromDate: new Date(Date.now() - (hours * 3600 * 1000)).toISOString(),
-                            toDate: new Date().toISOString(),
                             page: 1,
-                            rpp: 500
+                            rpp: 100
                         }
                     },
-                    purpose: "Context for understanding transfer patterns"
+                    purpose: "Understand whale's current holdings and positions"
                 },
                 {
                     step: 3,
-                    action: "Get current portfolio (optional)",
-                    tool: "call_nodit_api",
+                    action: "Get native token balance",
+                    tool: "cached_nodit_api",
                     parameters: {
+                        operation_id: "getNativeBalanceByAccount",
                         protocol: chain,
                         network: "mainnet",
-                        operationId: "getTokensOwnedByAccount",
-                        requestBody: {
+                        request_body: {
                             account: address
                         }
                     },
-                    purpose: "Understand whale's current position and holdings"
+                    purpose: "Include native token (ETH/MATIC) balance"
                 },
                 {
                     step: 4,
-                    action: "Calculate transfer values",
-                    tool: "call_nodit_api",
+                    action: "Calculate portfolio values",
+                    tool: "cached_nodit_api",
                     parameters: {
+                        operation_id: "getTokenPricesByContracts",
                         protocol: chain,
                         network: "mainnet",
-                        operationId: "getTokenPricesByContracts",
-                        requestBody: {
-                            contracts: "Extract unique token contracts from step 1 transfers"
+                        request_body: {
+                            contractAddresses: "Extract unique contracts from steps 1-2",
+                            currency: "USD"
                         }
                     },
-                    purpose: "Convert all transfer amounts to USD values"
+                    purpose: "Get current prices to calculate USD values"
                 }
             ],
 
-            process_results: {
-                activity_analysis: [
-                    "Categorize transfers: Inbound vs Outbound",
-                    "Identify largest movements by USD value", 
-                    "Detect new token acquisitions or full exits",
-                    "Calculate net flow per token",
-                    "Identify interaction patterns (DEX, CEX, etc.)"
+            whale_analysis: {
+                activity_metrics: [
+                    "Calculate transfer frequency and volume patterns",
+                    "Identify preferred tokens and trading pairs",
+                    "Detect timing patterns (day/hour preferences)",
+                    "Analyze counterparty relationships"
+                ],
+                portfolio_analysis: [
+                    "Current portfolio composition and diversity",
+                    "Net position changes per token during timeframe",
+                    "Portfolio concentration risk assessment",
+                    "Asset allocation shifts and rebalancing"
                 ],
                 behavior_patterns: [
-                    "Accumulation vs distribution detection",
-                    "Trading frequency analysis",
-                    "Preferred token analysis",
-                    "Timing pattern recognition"
+                    "Accumulation vs distribution phases",
+                    "DeFi interaction patterns",
+                    "Exchange usage patterns",
+                    "Risk management indicators"
                 ]
             },
 
-            expected_final_format: {
-                address,
-                chain,
-                timeframe: `${hours}h`,
-                timestamp: "ISO timestamp",
+            expected_output: {
+                whale_profile: {
+                    address,
+                    chain,
+                    analysis_period: `${hours}h`,
+                    portfolio_size_usd: "Total portfolio value",
+                    activity_level: "High/Medium/Low based on transfer frequency"
+                },
                 activity_summary: {
-                    total_transactions: "Count from step 2",
-                    total_token_transfers: "Count from step 1", 
-                    tokens_interacted: "Number of different tokens",
-                    total_value_moved_usd: "Sum of all transfer values",
-                    net_flow_direction: "Net inbound/outbound"
+                    total_transfers: "Number of transfers in period",
+                    tokens_traded: "Number of different tokens interacted with",
+                    total_volume_usd: "Total USD value moved",
+                    largest_move: "Largest single transfer",
+                    net_flow_direction: "Overall inbound/outbound flow"
                 },
                 token_movements: [
                     {
-                        token_contract: "From transfers",
-                        token_symbol: "From contract metadata",
+                        token_contract: "Contract address",
+                        token_symbol: "Token symbol",
+                        token_name: "Token name",
                         inbound_amount: "Total received",
-                        outbound_amount: "Total sent",
-                        net_flow: "Net change", 
-                        usd_value: "USD value of net flow",
-                        transfer_count: "Number of transfers"
+                        outbound_amount: "Total sent", 
+                        net_change: "Net position change",
+                        current_balance: "Current holdings",
+                        usd_value: "USD value of movements"
                     }
                 ],
-                significant_transfers: [
-                    {
-                        transaction_hash: "From transfer data",
-                        direction: "inbound/outbound",
-                        token: "Token symbol",
-                        amount: "Transfer amount",
-                        usd_value: "USD value using prices",
-                        counterparty: "Other address involved",
-                        timestamp: "Transfer time"
-                    }
-                ],
-                whale_insights: {
-                    behavior_pattern: "Accumulating/Distributing/Trading",
-                    primary_tokens: "Most active tokens",
-                    activity_level: "High/Medium/Low vs historical"
+                trading_insights: {
+                    primary_activity: "Most active token/sector",
+                    whale_behavior: "Accumulating/Distributing/Day Trading",
+                    risk_profile: "Conservative/Moderate/Aggressive",
+                    market_impact: "Potential impact assessment"
                 }
-            },
-
-            cost_optimization: {
-                comprehensive_analysis: "Pre-defined whale analysis patterns",
-                structured_data_processing: "Efficient data aggregation and processing",
-                token_savings: "90% reduction in whale monitoring complexity"
             }
         };
     }
