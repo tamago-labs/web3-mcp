@@ -1,7 +1,7 @@
 // Import base tools (included in all MCP servers)
 import * as BaseTools from './base';
 
-// Import specific MCP server tools
+// Import EVM-based MCP server tools
 import * as PortfolioTools from './portfolio-snapshot';
 import * as GasTools from './gas-optimization-helper';
 import * as WhaleTools from './whale-monitor';
@@ -9,10 +9,16 @@ import * as TokenTools from './token-intelligence';
 import * as TxTools from './transaction-tracker';
 import * as NftTools from './nft-collection-insights';
 
+// Import Bitcoin-specific MCP server tools
+import * as BitcoinWalletTools from './bitcoin-wallet-analyzer';
+import * as BitcoinTxTools from './bitcoin-transaction-tracker';
+import * as BitcoinNetworkTools from './bitcoin-network-insights';
+
 import { agentMode } from '../config';
 
 // Define tool collections for each agent mode
 const MCP_TOOL_COLLECTIONS: Record<string, any> = {
+    // EVM-based agent modes
     'portfolio-snapshot': {
         ...BaseTools,
         ...PortfolioTools
@@ -36,6 +42,20 @@ const MCP_TOOL_COLLECTIONS: Record<string, any> = {
     'nft-collection-insights': {
         ...BaseTools,
         ...NftTools
+    },
+    
+    // Bitcoin-specific agent modes
+    'bitcoin-wallet-analyzer': {
+        ...BaseTools,
+        ...BitcoinWalletTools
+    },
+    'bitcoin-transaction-tracker': {
+        ...BaseTools,
+        ...BitcoinTxTools
+    },
+    'bitcoin-network-insights': {
+        ...BaseTools,
+        ...BitcoinNetworkTools
     }
 };
 
@@ -55,3 +75,9 @@ export const CurrentModeTools = agentMode ? getToolsForMode(agentMode) : {};
 
 // Export all available modes
 export const AVAILABLE_MODES = Object.keys(MCP_TOOL_COLLECTIONS);
+
+// Export mode categories for organization
+export const MODE_CATEGORIES = {
+    EVM_CHAINS: ['portfolio-snapshot', 'gas-optimization-helper', 'whale-monitor', 'token-intelligence', 'transaction-tracker', 'nft-collection-insights'],
+    BITCOIN: ['bitcoin-wallet-analyzer', 'bitcoin-transaction-tracker', 'bitcoin-network-insights']
+};
