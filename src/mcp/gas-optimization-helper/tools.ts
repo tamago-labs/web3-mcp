@@ -19,8 +19,7 @@ export const GasGetCurrentPricesTool: McpTool = {
             overview: {
                 action: "Retrieve current gas prices and calculate fee tiers",
                 chain,
-                data_sources: ["Current gas price", "Fee history", "Network congestion"],
-                efficiency: "95% token savings with cached API specifications"
+                data_sources: ["Current gas price", "Fee history", "Network congestion"]
             },
 
             execution_plan: [
@@ -149,13 +148,6 @@ export const GasGetCurrentPricesTool: McpTool = {
                     recommendation: "Best tier based on current conditions",
                     savings_opportunity: "Potential savings by waiting"
                 }
-            },
-
-            cached_efficiency: {
-                gas_analysis_optimized: true,
-                cached_api_specifications: true,
-                no_spec_lookup_overhead: true,
-                token_cost_reduction: "95% vs dynamic API discovery"
             }
         };
     }
@@ -181,8 +173,7 @@ export const GasGetOptimalTimingTool: McpTool = {
                 action: "Analyze gas patterns to recommend optimal transaction timing",
                 chain,
                 urgency_level: urgency,
-                analysis_scope: "Historical patterns + current conditions",
-                efficiency: "95% token savings with cached specifications"
+                analysis_scope: "Historical patterns + current conditions"
             },
 
             execution_plan: [
