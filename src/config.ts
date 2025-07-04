@@ -36,8 +36,7 @@ export function validateEnvironment(): void {
         const hasAgentMode = !!(args?.agent_mode)
 
         if (!hasAgentMode) {
-            console.error(`❌ AGENT_MODE is not set. Use --agent_mode=<mode>`);
-            console.error(`Available modes: portfolio-snapshot, gas-optimization-helper, whale-monitor, token-intelligence, transaction-tracker, nft-collection-insights, bitcoin-wallet-analyzer, bitcoin-transaction-tracker, bitcoin-network-insights`);
+            console.error(`❌ AGENT_MODE is not set. Use --agent_mode=<mode>`); 
             throw new Error('Agent mode is required');
         } else {
             console.error(`✅ Agent Mode: ${args.agent_mode}`);

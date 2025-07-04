@@ -2,3 +2,4 @@
 export { SymbolConverterTool } from './symbol_converter_tool'; 
 export { CachedNoditApiTool } from './cached_nodit_api_tool';
 export { CachedBitcoinApiTool } from './cached_bitcoin_api_tool';
+export { CachedAptosApiTool } from './cached_aptos_api_tool';

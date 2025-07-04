@@ -203,21 +203,18 @@ const CACHED_NODIT_API_SPECS = {
             }
         }
     },
-    getBlocksWithinRange: {
-        operationId: "getBlocksWithinRange",
-        path: "/{protocol}/{network}/blockchain/getBlocksWithinRange",
+    getTokenHoldersByContract: {
+        operationId: "getTokenHoldersByContract",
+        path: "/{protocol}/{network}/token/getTokenHoldersByContract",
         method: "POST",
-        description: "Get blocks within a specific range",
+        description: "Get token holders for a contract (useful for LP tokens)",
         requestSchema: {
             type: "object",
+            required: ["contractAddress"],
             properties: {
-                fromBlock: { type: "string" },
-                toBlock: { type: "string" },
-                fromDate: { type: "string", format: "date-time" },
-                toDate: { type: "string", format: "date-time" },
+                contractAddress: { type: "string", pattern: "^0[xX][0-9a-fA-F]{40}$" },
                 page: { type: "integer", minimum: 1, maximum: 100 },
                 rpp: { type: "integer", minimum: 1, maximum: 1000 },
-                cursor: { type: "string" },
                 withCount: { type: "boolean", default: false }
             }
         },
@@ -229,18 +226,117 @@ const CACHED_NODIT_API_SPECS = {
                     items: {
                         type: "object",
                         properties: {
-                            hash: { type: "string" },
-                            number: { type: "integer" },
+                            address: { type: "string" },
+                            balance: { type: "string" }
+                        }
+                    }
+                },
+                count: { type: "integer" }
+            }
+        }
+    },
+    getTokenTransfersByContract: {
+        operationId: "getTokenTransfersByContract",
+        path: "/{protocol}/{network}/token/getTokenTransfersByContract",
+        method: "POST",
+        description: "Get token transfers for a contract (useful for tracking LP activity)",
+        requestSchema: {
+            type: "object",
+            required: ["contractAddress"],
+            properties: {
+                contractAddress: { type: "string", pattern: "^0[xX][0-9a-fA-F]{40}$" },
+                fromDate: { type: "string", format: "date-time" },
+                toDate: { type: "string", format: "date-time" },
+                page: { type: "integer", minimum: 1, maximum: 100 },
+                rpp: { type: "integer", minimum: 1, maximum: 1000 }
+            }
+        },
+        responseSchema: {
+            type: "object",
+            properties: {
+                items: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            from: { type: "string" },
+                            to: { type: "string" },
+                            value: { type: "string" },
                             timestamp: { type: "integer" },
-                            parentHash: { type: "string" },
-                            miner: { type: "string" },
-                            gasLimit: { type: "string" },
-                            gasUsed: { type: "string" },
-                            transactionCount: { type: "integer" },
-                            transactions: {
-                                type: "array",
-                                items: { type: "string" }
-                            }
+                            transactionHash: { type: "string" }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    getTransactionsByAccount: {
+        operationId: "getTransactionsByAccount",
+        path: "/{protocol}/{network}/transaction/getTransactionsByAccount",
+        method: "POST",
+        description: "Get transactions for an account (useful for DEX router analysis)",
+        requestSchema: {
+            type: "object",
+            required: ["account"],
+            properties: {
+                account: { type: "string", pattern: "^0[xX][0-9a-fA-F]{40}$" },
+                relation: { type: "string", enum: ["from", "to", "both"], default: "both" },
+                fromDate: { type: "string", format: "date-time" },
+                toDate: { type: "string", format: "date-time" },
+                page: { type: "integer", minimum: 1, maximum: 100 },
+                rpp: { type: "integer", minimum: 1, maximum: 1000 }
+            }
+        },
+        responseSchema: {
+            type: "object",
+            properties: {
+                items: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            hash: { type: "string" },
+                            from: { type: "string" },
+                            to: { type: "string" },
+                            value: { type: "string" },
+                            timestamp: { type: "integer" },
+                            gasUsed: { type: "string" }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    getTokenContractMetadataByContracts: {
+        operationId: "getTokenContractMetadataByContracts",
+        path: "/{protocol}/{network}/token/getTokenContractMetadataByContracts",
+        method: "POST",
+        description: "Get token contract metadata (useful for pool token info)",
+        requestSchema: {
+            type: "object",
+            required: ["contractAddresses"],
+            properties: {
+                contractAddresses: {
+                    type: "array",
+                    items: { type: "string", pattern: "^0[xX][0-9a-fA-F]{40}$" },
+                    maxItems: 100
+                }
+            }
+        },
+        responseSchema: {
+            type: "object",
+            properties: {
+                items: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            address: { type: "string" },
+                            name: { type: "string" },
+                            symbol: { type: "string" },
+                            decimals: { type: "integer" },
+                            totalSupply: { type: "string" },
+                            type: { type: "string" }
                         }
                     }
                 }
@@ -260,7 +356,10 @@ export const CachedNoditApiTool: McpTool = {
             'getTokensOwnedByAccount',
             'getNativeBalanceByAccount',
             'getGasPrice',
-            'getBlocksWithinRange'
+            'getTokenHoldersByContract',
+            'getTokenTransfersByContract', 
+            'getTransactionsByAccount',
+            'getTokenContractMetadataByContracts'
         ]).describe("Nodit API operation to call"),
         protocol: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain protocol"),
         network: z.enum(['mainnet', 'sepolia', 'amoy']).optional().default('mainnet').describe("Network"),

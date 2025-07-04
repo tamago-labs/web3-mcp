@@ -1,13 +1,17 @@
 // Import base tools (included in all MCP servers)
 import * as BaseTools from './base';
 
-// Import EVM-based MCP server tools
+// Import specific MCP server tools
 import * as PortfolioTools from './portfolio-snapshot';
 import * as GasTools from './gas-optimization-helper';
 import * as WhaleTools from './whale-monitor';
 import * as TokenTools from './token-intelligence';
 import * as TxTools from './transaction-tracker';
 import * as NftTools from './nft-collection-insights';
+import * as EvmDefiTools from './evm-defi';
+
+import * as AptosDefiTools from './aptos-defi';
+
 
 // Import Bitcoin-specific MCP server tools
 import * as BitcoinWalletTools from './bitcoin-wallet-analyzer';
@@ -43,7 +47,7 @@ const MCP_TOOL_COLLECTIONS: Record<string, any> = {
         ...BaseTools,
         ...NftTools
     },
-    
+
     // Bitcoin-specific agent modes
     'bitcoin-wallet-analyzer': {
         ...BaseTools,
@@ -56,6 +60,14 @@ const MCP_TOOL_COLLECTIONS: Record<string, any> = {
     'bitcoin-network-insights': {
         ...BaseTools,
         ...BitcoinNetworkTools
+    },
+    'evm-defi': {
+        ...BaseTools,
+        ...EvmDefiTools
+    },
+    'aptos-defi': {
+        ...BaseTools,
+        ...AptosDefiTools
     }
 };
 
@@ -78,6 +90,7 @@ export const AVAILABLE_MODES = Object.keys(MCP_TOOL_COLLECTIONS);
 
 // Export mode categories for organization
 export const MODE_CATEGORIES = {
-    EVM_CHAINS: ['portfolio-snapshot', 'gas-optimization-helper', 'whale-monitor', 'token-intelligence', 'transaction-tracker', 'nft-collection-insights'],
-    BITCOIN: ['bitcoin-wallet-analyzer', 'bitcoin-transaction-tracker', 'bitcoin-network-insights']
+    EVM_CHAINS: ['portfolio-snapshot', 'gas-optimization-helper', 'whale-monitor', 'token-intelligence', 'transaction-tracker', 'nft-collection-insights', 'evm-defi'],
+    BITCOIN: ['bitcoin-wallet-analyzer', 'bitcoin-transaction-tracker', 'bitcoin-network-insights'],
+    APTOS: ["aptos-defi"]
 };
