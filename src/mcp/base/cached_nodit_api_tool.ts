@@ -202,6 +202,50 @@ const CACHED_NODIT_API_SPECS = {
                 gasPrice: { type: "string" }
             }
         }
+    },
+    getBlocksWithinRange: {
+        operationId: "getBlocksWithinRange",
+        path: "/{protocol}/{network}/blockchain/getBlocksWithinRange",
+        method: "POST",
+        description: "Get blocks within a specific range",
+        requestSchema: {
+            type: "object",
+            properties: {
+                fromBlock: { type: "string" },
+                toBlock: { type: "string" },
+                fromDate: { type: "string", format: "date-time" },
+                toDate: { type: "string", format: "date-time" },
+                page: { type: "integer", minimum: 1, maximum: 100 },
+                rpp: { type: "integer", minimum: 1, maximum: 1000 },
+                cursor: { type: "string" },
+                withCount: { type: "boolean", default: false }
+            }
+        },
+        responseSchema: {
+            type: "object",
+            properties: {
+                items: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            hash: { type: "string" },
+                            number: { type: "integer" },
+                            timestamp: { type: "integer" },
+                            parentHash: { type: "string" },
+                            miner: { type: "string" },
+                            gasLimit: { type: "string" },
+                            gasUsed: { type: "string" },
+                            transactionCount: { type: "integer" },
+                            transactions: {
+                                type: "array",
+                                items: { type: "string" }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 };
 
@@ -215,7 +259,8 @@ export const CachedNoditApiTool: McpTool = {
             'getTokenTransfersByAccount',
             'getTokensOwnedByAccount',
             'getNativeBalanceByAccount',
-            'getGasPrice'
+            'getGasPrice',
+            'getBlocksWithinRange'
         ]).describe("Nodit API operation to call"),
         protocol: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain protocol"),
         network: z.enum(['mainnet', 'sepolia', 'amoy']).optional().default('mainnet').describe("Network"),
