@@ -135,12 +135,6 @@ export const SymbolConverterTool: McpTool = {
                         "Ensure token is an ERC20 standard"
                     ]
                 }
-            },
-
-            efficiency: {
-                cached_api_spec: true,
-                no_live_spec_lookup: true,
-                token_savings: "90% reduction vs full API discovery"
             }
         };
     }

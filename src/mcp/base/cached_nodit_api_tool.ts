@@ -265,13 +265,6 @@ export const CachedNoditApiTool: McpTool = {
                 valid_request: true,
                 protocol_supported: ['ethereum', 'polygon', 'arbitrum', 'base', 'optimism'].includes(protocol),
                 operation_cached: true
-            },
-            
-            cost_efficiency: {
-                cached_spec: true,
-                no_spec_lookup_needed: true,
-                direct_api_call_ready: true,
-                token_savings: "95% reduction vs live spec retrieval"
             }
         };
     }
