@@ -1,47 +1,54 @@
 {
-    "name": "@tamago-labs/web3-mcp",
-    "version": "0.1.0",
-    "description": "MCP libraries for Web3 Analytics",
-    "main": "dist/index.js",
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts",
-    "bin": {
-        "web3-mcp": "dist/index.js"
-    },
-    "files": [
-        "dist"
-    ],
-    "keywords": [],
-    "scripts": {
-        "build": "tsup",
-        "prepare": "npm run build",
-        "test": "jest",
-        "dev": "ts-node src/index.ts"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/tamago-labs/web3-mcp.git"
-    },
-    "author": "Pisuth",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/tamago-labs/web3-mcp/issues"
-    },
-    "homepage": "https://tamagolabs.com",
-    "dependencies": {
-        "@modelcontextprotocol/sdk": "^1.10.2",
-        "axios": "^1.10.0",
-        "multiformats": "^9.9.0",
-        "viem": "^2.8.12",
-        "zod": "^3.24.3"
-    },
-    "devDependencies": {
-        "@types/jest": "^29.5.14",
-        "@types/node": "^22.15.2",
-        "jest": "^29.7.0",
-        "ts-jest": "^29.3.2",
-        "ts-node": "^10.9.2",
-        "tsup": "^8.4.0",
-        "typescript": "^5.8.3"
-    }
+  "name": "@tamago-labs/web3-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol (MCP) servers for Web3 Analytics",
+  "main": "dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "web3-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "mcp",
+    "web3",
+    "blockchain",
+    "ethereum",
+    "polygon",
+    "arbitrum",
+    "nodit"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "prepare": "npm run build",
+    "test": "jest",
+    "dev": "ts-node src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamago-labs/web3-mcp.git"
+  },
+  "author": "Pisuth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tamago-labs/web3-mcp/issues"
+  },
+  "homepage": "https://tamagolabs.com",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.2",
+    "axios": "^1.10.0",
+    "multiformats": "^9.9.0",
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.2",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.2",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.3"
+  }
 }
