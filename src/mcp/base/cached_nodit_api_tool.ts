@@ -262,7 +262,7 @@ export const CachedNoditApiTool: McpTool = {
             'getGasPrice',
             'getBlocksWithinRange'
         ]).describe("Nodit API operation to call"),
-        protocol: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain protocol"),
+        protocol: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain protocol"),
         network: z.enum(['mainnet', 'sepolia', 'amoy']).optional().default('mainnet').describe("Network"),
         request_body: z.record(z.any()).describe("Request body parameters")
     },
@@ -308,7 +308,7 @@ export const CachedNoditApiTool: McpTool = {
             
             validation: {
                 valid_request: true,
-                protocol_supported: ['ethereum', 'polygon', 'arbitrum', 'base', 'optimism'].includes(protocol),
+                protocol_supported: ['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia'].includes(protocol),
                 operation_cached: true
             }
         };

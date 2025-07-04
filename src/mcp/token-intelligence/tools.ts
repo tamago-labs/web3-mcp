@@ -7,7 +7,7 @@ export const TokenGetOverviewTool: McpTool = {
     schema: {
         token_symbol: z.string().optional().describe("Token symbol (e.g., USDC, WETH)"),
         contract_address: z.string().optional().describe("Token contract address"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to query")
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to query")
     },
     handler: async (agent: any, input: Record<string, any>) => {
         const { token_symbol, contract_address, chain } = input;
@@ -171,7 +171,7 @@ export const TokenSearchByNameTool: McpTool = {
     description: "Search tokens by name/symbol using cached Nodit API integration",
     schema: {
         query: z.string().describe("Token name or symbol to search"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to search"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to search"),
         limit: z.number().optional().default(20).describe("Maximum results to return")
     },
     handler: async (agent: any, input: Record<string, any>) => {
@@ -290,7 +290,7 @@ export const TokenGetHolderAnalysisTool: McpTool = {
     description: "Analyze token holder distribution and concentration using cached Nodit API",
     schema: {
         contract_address: z.string().describe("Token contract address"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to query"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to query"),
         top_holders_count: z.number().optional().default(100).describe("Number of top holders to analyze")
     },
     handler: async (agent: any, input: Record<string, any>) => {

@@ -6,7 +6,7 @@ export const PortfolioGetBalancesTool: McpTool = {
     description: "Get complete token balances for an address using cached Nodit API integration",
     schema: {
         address: z.string().describe("Wallet address to check"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to query"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to query"),
         include_native: z.boolean().optional().default(true).describe("Include native token balance"),
         include_tokens: z.boolean().optional().default(true).describe("Include ERC20 token balances"),
         include_nfts: z.boolean().optional().default(false).describe("Include NFT summary")
@@ -42,7 +42,7 @@ export const PortfolioGetBalancesTool: McpTool = {
                         network: "mainnet",
                         request_body: { account: address }
                     } : null,
-                    expected_result: include_native ? `Native ${chain === 'ethereum' ? 'ETH' : chain === 'polygon' ? 'MATIC' : 'ETH'} balance` : "Skipped"
+                    expected_result: include_native ? `Native ${chain === 'ethereum' ? 'ETH' : chain === 'polygon' ? 'MATIC' : chain === 'avalanche' ? 'AVAX' : chain === 'kaia' ? 'KAIA' : 'ETH'} balance` : "Skipped"
                 },
                 {
                     step: 2,
@@ -124,7 +124,7 @@ export const PortfolioGetBalancesTool: McpTool = {
                 },
                 balances: {
                     native: include_native ? {
-                        symbol: chain === 'ethereum' ? 'ETH' : chain === 'polygon' ? 'MATIC' : 'ETH',
+                        symbol: chain === 'ethereum' ? 'ETH' : chain === 'polygon' ? 'MATIC' : chain === 'avalanche' ? 'AVAX' : chain === 'kaia' ? 'KAIA' : 'ETH',
                         balance: "From getNativeBalanceByAccount",
                         balance_formatted: "Human readable balance",
                         usd_value: "Calculated using current price",
@@ -159,7 +159,7 @@ export const PortfolioGetCrossChainTool: McpTool = {
     description: "Get portfolio summary across multiple chains using cached Nodit API integration", 
     schema: {
         address: z.string().describe("Wallet address to check"),
-        chains: z.array(z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism'])).describe("Chains to include"),
+        chains: z.array(z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia'])).describe("Chains to include"),
         currency: z.enum(['USD', 'ETH']).optional().default('USD').describe("Currency for totals")
     },
     handler: async (agent: any, input: Record<string, any>) => {
@@ -221,7 +221,7 @@ export const PortfolioGetCrossChainTool: McpTool = {
                     step: chains.length + 1,
                     action: "Get prices for all unique tokens across chains",
                     description: "Collect unique contract addresses from all chains and get prices",
-                    per_chain_calls: chains.map(chain => ({
+                    per_chain_calls: chains.map((chain: any) => ({
                         chain,
                         tool: "cached_nodit_api",
                         parameters: {
@@ -268,10 +268,10 @@ export const PortfolioGetCrossChainTool: McpTool = {
                     chain_count: chains.length,
                     largest_chain: "Chain with highest value"
                 },
-                chain_breakdown: chains.map(chain => ({
+                chain_breakdown: chains.map((chain: any) => ({
                     chain,
                     native_balance: {
-                        symbol: chain === 'ethereum' ? 'ETH' : chain === 'polygon' ? 'MATIC' : 'ETH',
+                        symbol: chain === 'ethereum' ? 'ETH' : chain === 'polygon' ? 'MATIC' : chain === 'avalanche' ? 'AVAX' : chain === 'kaia' ? 'KAIA' : 'ETH',
                         balance: "Native token balance",
                         usd_value: "USD value"
                     },

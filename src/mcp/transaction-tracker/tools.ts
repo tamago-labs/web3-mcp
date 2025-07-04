@@ -6,7 +6,7 @@ export const TxGetDetailsTool: McpTool = {
     description: "Get comprehensive transaction details using cached Nodit API integration",
     schema: {
         tx_hash: z.string().describe("Transaction hash to analyze"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain network"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain network"),
         include_trace: z.boolean().optional().default(false).describe("Include internal transaction trace")
     },
     handler: async (agent: any, input: Record<string, any>) => {
@@ -156,7 +156,7 @@ export const TxGetAddressActivityTool: McpTool = {
     description: "Get recent transaction activity for an address using cached Nodit API",
     schema: {
         address: z.string().describe("Address to check"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain network"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain network"),
         limit: z.number().optional().default(10).describe("Number of recent transactions"),
         include_token_transfers: z.boolean().optional().default(true).describe("Include token transfers"),
         hours: z.number().optional().default(24).describe("Hours to look back")
@@ -315,7 +315,7 @@ export const TxGetLast10BlocksTool: McpTool = {
     name: "tx_get_last_10_blocks",
     description: "Get the last 10 blocks for simple testing using cached Nodit API",
     schema: {
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain network")
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain network")
     },
     handler: async (agent: any, input: Record<string, any>) => {
         const { chain } = input;
@@ -401,7 +401,7 @@ export const TxTrackBatchTransactionsTool: McpTool = {
     description: "Track multiple transactions simultaneously using cached Nodit API",
     schema: {
         tx_hashes: z.array(z.string()).describe("Array of transaction hashes to track"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain network"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain network"),
         include_status_summary: z.boolean().optional().default(true).describe("Include batch status summary")
     },
     handler: async (agent: any, input: Record<string, any>) => {

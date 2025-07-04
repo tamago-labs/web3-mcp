@@ -6,7 +6,7 @@ export const NftGetCollectionStatsTool: McpTool = {
     description: "Get comprehensive NFT collection statistics using cached Nodit API integration",
     schema: {
         contract_address: z.string().describe("NFT contract address"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain network")
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain network")
     },
     handler: async (agent: any, input: Record<string, any>) => {
         const { contract_address, chain } = input;
@@ -191,7 +191,7 @@ export const NftGetTokenMetadataTool: McpTool = {
     schema: {
         contract_address: z.string().describe("NFT contract address"),
         token_id: z.string().describe("Token ID"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain network")
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain network")
     },
     handler: async (agent: any, input: Record<string, any>) => {
         const { contract_address, token_id, chain } = input;
@@ -358,7 +358,7 @@ export const NftTrackCollectionActivityTool: McpTool = {
     description: "Track NFT collection activity and trends using cached Nodit API",
     schema: {
         contract_address: z.string().describe("NFT contract address"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain network"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain network"),
         days: z.number().optional().default(7).describe("Days to look back for activity"),
         include_holder_changes: z.boolean().optional().default(true).describe("Track holder count changes")
     },

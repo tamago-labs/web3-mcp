@@ -7,7 +7,7 @@ export const WhaleGetLargeTransfersTool: McpTool = {
     schema: {
         token_symbol: z.string().optional().describe("Token symbol to monitor (e.g., USDC, WETH)"),
         contract_address: z.string().optional().describe("Token contract address"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to monitor"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to monitor"),
         min_usd_amount: z.number().optional().default(100000).describe("Minimum USD value for whale threshold"),
         hours: z.number().optional().default(24).describe("Hours to look back")
     },
@@ -139,7 +139,7 @@ export const WhaleMonitorAddressTool: McpTool = {
     description: "Monitor specific whale address activity using cached Nodit API integration",
     schema: {
         address: z.string().describe("Whale address to monitor"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to monitor"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to monitor"),
         hours: z.number().optional().default(24).describe("Hours to look back")
     },
     handler: async (agent: any, input: Record<string, any>) => {

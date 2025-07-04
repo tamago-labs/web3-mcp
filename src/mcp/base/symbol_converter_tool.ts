@@ -6,7 +6,7 @@ export const SymbolConverterTool: McpTool = {
     description: "Convert token symbols to contract addresses with cached major tokens and efficient Nodit API integration",
     schema: {
         symbol: z.string().describe("Token symbol (e.g., USDC, WETH, UNI)"),
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Target blockchain"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Target blockchain"),
         verified_only: z.boolean().optional().default(true).describe("Use cached major tokens first")
     },
     handler: async (agent: any, input: Record<string, any>) => {
@@ -55,6 +55,22 @@ export const SymbolConverterTool: McpTool = {
                 DAI: { address: "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1", decimals: 18, name: "Dai Stablecoin" },
                 UNI: { address: "0x6fd9d7AD17242c41f7131d257212c54A0e816691", decimals: 18, name: "Uniswap" },
                 LINK: { address: "0x350a791Bfc2C21F9Ed5d10980Dad2e2638ffa7f6", decimals: 18, name: "ChainLink Token" }
+            },
+            avalanche: {
+                USDC: { address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E", decimals: 6, name: "USD Coin" },
+                USDT: { address: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7", decimals: 6, name: "Tether USD" },
+                WAVAX: { address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7", decimals: 18, name: "Wrapped AVAX" },
+                WETH: { address: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB", decimals: 18, name: "Wrapped Ether" },
+                WBTC: { address: "0x50b7545627a5162F82A992c33b87aDc75187B218", decimals: 8, name: "Wrapped BTC" },
+                DAI: { address: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70", decimals: 18, name: "Dai Stablecoin" },
+                LINK: { address: "0x5947BB275c521040051D82396192181b413227A3", decimals: 18, name: "ChainLink Token" }
+            },
+            kaia: {
+                WKAIA: { address: "0x19Aac5f612f524B754CA7e7c41cbFa2E981A4432", decimals: 18, name: "Wrapped KAIA" },
+                USDT: { address: "0xcee8faf64bb97a73bb51e115aa89c17ffa8dd167", decimals: 6, name: "Tether USD" },
+                USDC: { address: "0x754288077d0ff82af7a5317c7cb8c444d421d103", decimals: 6, name: "USD Coin" },
+                WETH: { address: "0xcd6f29dc9ca217d0973d3d21bf58edd3ca871a86", decimals: 18, name: "Wrapped Ether" },
+                WBTC: { address: "0xdc9e1367f5650Ffd4c615d43b4140783486a8F57", decimals: 8, name: "Wrapped BTC" }
             }
         };
 

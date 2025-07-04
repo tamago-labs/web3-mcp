@@ -5,7 +5,7 @@ export const GasGetCurrentPricesTool: McpTool = {
     name: "gas_get_current_prices",
     description: "Get current gas prices for specified chain using cached Nodit API integration",
     schema: {
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to query")
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to query")
     },
     handler: async (agent: any, input: Record<string, any>) => {
         const { chain } = input;
@@ -64,6 +64,8 @@ export const GasGetCurrentPricesTool: McpTool = {
                             contractAddresses: [
                                 chain === 'ethereum' ? "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" : // WETH
                                 chain === 'polygon' ? "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270" : // WMATIC
+                                chain === 'avalanche' ? "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7" : // WAVAX
+                                chain === 'kaia' ? "0x19Aac5f612f524B754CA7e7c41cbFa2E981A4432" : // WKAIA
                                 "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" // Default to WETH
                             ],
                             currency: "USD"
@@ -157,7 +159,7 @@ export const GasGetOptimalTimingTool: McpTool = {
     name: "gas_get_optimal_timing",
     description: "Get optimal timing recommendations for transactions using cached Nodit API",
     schema: {
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to query"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to query"),
         urgency: z.enum(['low', 'medium', 'high']).optional().default('medium').describe("Transaction urgency")
     },
     handler: async (agent: any, input: Record<string, any>) => {
@@ -219,6 +221,8 @@ export const GasGetOptimalTimingTool: McpTool = {
                             contractAddresses: [
                                 chain === 'ethereum' ? "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" : // WETH
                                 chain === 'polygon' ? "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270" : // WMATIC  
+                                chain === 'avalanche' ? "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7" : // WAVAX
+                                chain === 'kaia' ? "0x19Aac5f612f524B754CA7e7c41cbFa2E981A4432" : // WKAIA
                                 "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" // Default to WETH
                             ],
                             currency: "USD"
