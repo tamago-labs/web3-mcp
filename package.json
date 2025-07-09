@@ -1,6 +1,6 @@
 {
   "name": "@tamago-labs/web3-mcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Model Context Protocol (MCP) servers for Web3 Analytics",
   "main": "dist/index.js",
   "module": "./dist/index.mjs",
