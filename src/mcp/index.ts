@@ -22,54 +22,46 @@ import { agentMode } from '../config';
 
 // Define tool collections for each agent mode
 const MCP_TOOL_COLLECTIONS: Record<string, any> = {
+    // Agent Base Tools
+    "agent-base": {
+        ...BaseTools,
+    },
     // EVM-based agent modes
     'portfolio-snapshot': {
-        ...BaseTools,
         ...PortfolioTools
     },
     'gas-optimization-helper': {
-        ...BaseTools,
         ...GasTools
     },
     'whale-monitor': {
-        ...BaseTools,
         ...WhaleTools
     },
     'token-intelligence': {
-        ...BaseTools,
         ...TokenTools
     },
     'transaction-tracker': {
-        ...BaseTools,
         ...TxTools
     },
     'nft-collection-insights': {
-        ...BaseTools,
         ...NftTools
     },
     // Bitcoin-specific agent modes
     'bitcoin-wallet-analyzer': {
-        ...BaseTools,
         ...BitcoinWalletTools
     },
     'bitcoin-transaction-tracker': {
-        ...BaseTools,
         ...BitcoinTxTools
     },
     'bitcoin-network-insights': {
-        ...BaseTools,
         ...BitcoinNetworkTools
     },
     'evm-defi': {
-        ...BaseTools,
         ...EvmDefiTools
     },
     'aptos-defi': {
-        ...BaseTools,
         ...AptosDefiTools
     },
     'quant-trading': {
-        ...BaseTools,
         ...QuantTools
     }
 };
