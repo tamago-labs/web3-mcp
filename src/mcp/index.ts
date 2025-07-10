@@ -8,6 +8,7 @@ import * as WhaleTools from './whale-monitor';
 import * as TokenTools from './token-intelligence';
 import * as TxTools from './transaction-tracker';
 import * as NftTools from './nft-collection-insights';
+import * as BlockTools from './block-analytics';
 import * as EvmDefiTools from './evm-defi';
 import * as AptosDefiTools from './aptos-defi';
 import * as QuantTools from './quant-trading';
@@ -21,7 +22,7 @@ import * as BitcoinNetworkTools from './bitcoin-network-insights';
 import { agentMode } from '../config';
 
 // Define tool collections for each agent mode
-const MCP_TOOL_COLLECTIONS: Record<string, any> = {
+const MCP_TOOL_COLLECTIONS: Record<string, any> = {// Agent Base Tools
     // Agent Base Tools
     "agent-base": {
         ...BaseTools,
@@ -63,17 +64,20 @@ const MCP_TOOL_COLLECTIONS: Record<string, any> = {
     },
     'quant-trading': {
         ...QuantTools
+    },
+    'block-analytics': { 
+        ...BlockTools
     }
 };
 
 // Get tools based on agent mode
 export function getToolsForMode(mode: string): Record<string, any> {
     const tools = MCP_TOOL_COLLECTIONS[mode];
-
+    
     if (!tools) {
         throw new Error(`Unknown agent mode: ${mode}. Available modes: ${Object.keys(MCP_TOOL_COLLECTIONS).join(', ')}`);
     }
-
+    
     return tools;
 }
 

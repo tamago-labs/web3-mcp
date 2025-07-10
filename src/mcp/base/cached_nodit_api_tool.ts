@@ -203,6 +203,79 @@ const CACHED_NODIT_API_SPECS = {
             }
         }
     },
+    getBlocksWithinRange: {
+        operationId: "getBlocksWithinRange",
+        path: "/{protocol}/{network}/blockchain/getBlocksWithinRange",
+        method: "POST",
+        description: "Get blocks within specified range",
+        requestSchema: {
+            type: "object",
+            properties: {
+                fromBlock: { type: "string" },
+                toBlock: { type: "string" },
+                fromDate: { type: "string", format: "date-time" },
+                toDate: { type: "string", format: "date-time" },
+                page: { type: "integer", minimum: 1, maximum: 100 },
+                rpp: { type: "integer", minimum: 1, maximum: 1000 },
+                withCount: { type: "boolean", default: false }
+            }
+        },
+        responseSchema: {
+            type: "object",
+            properties: {
+                items: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            hash: { type: "string" },
+                            number: { type: "integer" },
+                            timestamp: { type: "integer" },
+                            miner: { type: "string" },
+                            gasLimit: { type: "string" },
+                            gasUsed: { type: "string" },
+                            transactionCount: { type: "integer" },
+                            size: { type: "string" }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    getBlockByHashOrNumber: {
+        operationId: "getBlockByHashOrNumber",
+        path: "/{protocol}/{network}/blockchain/getBlockByHashOrNumber",
+        method: "POST",
+        description: "Get block by hash or number",
+        requestSchema: {
+            type: "object",
+            required: ["block"],
+            properties: {
+                block: { 
+                    type: "string",
+                    description: "Block number, hash, or tag (latest/earliest)"
+                }
+            }
+        },
+        responseSchema: {
+            type: "object",
+            properties: {
+                hash: { type: "string" },
+                number: { type: "integer" },
+                timestamp: { type: "integer" },
+                parentHash: { type: "string" },
+                miner: { type: "string" },
+                difficulty: { type: "string" },
+                gasLimit: { type: "string" },
+                gasUsed: { type: "string" },
+                transactionCount: { type: "integer" },
+                transactions: {
+                    type: "array",
+                    items: { type: "string" }
+                }
+            }
+        }
+    },
     getTokenHoldersByContract: {
         operationId: "getTokenHoldersByContract",
         path: "/{protocol}/{network}/token/getTokenHoldersByContract",
@@ -356,6 +429,8 @@ export const CachedNoditApiTool: McpTool = {
             'getTokensOwnedByAccount',
             'getNativeBalanceByAccount',
             'getGasPrice',
+            'getBlocksWithinRange',
+            'getBlockByHashOrNumber',
             'getTokenHoldersByContract',
             'getTokenTransfersByContract', 
             'getTransactionsByAccount',
