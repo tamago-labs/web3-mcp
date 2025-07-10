@@ -1,1 +1,1 @@
-export { TxGetDetailsTool, TxGetAddressActivityTool, TxGetLast10BlocksTool, TxTrackBatchTransactionsTool } from './tools';
+export { TxGetDetailsTool, TxGetAddressActivityTool, TxTrackBatchTransactionsTool } from './tools';
