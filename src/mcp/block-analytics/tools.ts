@@ -5,7 +5,7 @@ export const BlockGetRecentBlocksTool: McpTool = {
     name: "block_get_recent_blocks",
     description: "Get recent blocks information using cached Nodit API integration",
     schema: {
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to query"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to query"),
         limit: z.number().optional().default(10).describe("Number of recent blocks to fetch (max 100)")
     },
     handler: async (agent: any, input: Record<string, any>) => {
@@ -109,7 +109,7 @@ export const BlockGetByNumberOrHashTool: McpTool = {
     name: "block_get_by_number_or_hash",
     description: "Get specific block information by number or hash using cached Nodit API",
     schema: {
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to query"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to query"),
         block: z.string().describe("Block number (e.g., '12345'), hash (0x...), or tag ('latest', 'earliest')")
     },
     handler: async (agent: any, input: Record<string, any>) => {
@@ -223,7 +223,7 @@ export const BlockAnalyzeTimeRangeTool: McpTool = {
     name: "block_analyze_time_range",
     description: "Analyze blocks within a specific time range using cached Nodit API",
     schema: {
-        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism']).describe("Blockchain to query"),
+        chain: z.enum(['ethereum', 'polygon', 'arbitrum', 'base', 'optimism', 'avalanche', 'kaia']).describe("Blockchain to query"),
         from_date: z.string().describe("Start date (ISO format: 2024-01-01T00:00:00Z)"),
         to_date: z.string().describe("End date (ISO format: 2024-01-01T23:59:59Z)"),
         max_blocks: z.number().optional().default(100).describe("Maximum blocks to analyze")
