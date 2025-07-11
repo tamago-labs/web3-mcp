@@ -55,23 +55,12 @@ export const GasGetCurrentPricesTool: McpTool = {
                 {
                     step: 3,
                     action: "Get native token price for USD calculations",
-                    tool: "cached_nodit_api",
+                    tool: "get_native_token_price_by_chain",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet", 
-                        request_body: {
-                            contractAddresses: [
-                                chain === 'ethereum' ? "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" : // WETH
-                                chain === 'polygon' ? "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270" : // WMATIC
-                                chain === 'avalanche' ? "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7" : // WAVAX
-                                chain === 'kaia' ? "0x19Aac5f612f524B754CA7e7c41cbFa2E981A4432" : // WKAIA
-                                "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" // Default to WETH
-                            ],
-                            currency: "USD"
-                        }
+                        chain: chain
                     },
-                    purpose: "Get native token price for USD gas cost calculations"
+                    purpose: "Get native token price for USD gas cost calculations",
+                    optimization: "Simple chain-based lookup, no contract address mapping needed"
                 }
             ],
 
@@ -212,23 +201,12 @@ export const GasGetOptimalTimingTool: McpTool = {
                 {
                     step: 3,
                     action: "Get native token price for cost calculations",
-                    tool: "cached_nodit_api",
+                    tool: "get_native_token_price_by_chain",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: {
-                            contractAddresses: [
-                                chain === 'ethereum' ? "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" : // WETH
-                                chain === 'polygon' ? "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270" : // WMATIC  
-                                chain === 'avalanche' ? "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7" : // WAVAX
-                                chain === 'kaia' ? "0x19Aac5f612f524B754CA7e7c41cbFa2E981A4432" : // WKAIA
-                                "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" // Default to WETH
-                            ],
-                            currency: "USD"
-                        }
+                        chain: chain
                     },
-                    purpose: "Calculate USD savings for timing recommendations"
+                    purpose: "Calculate USD savings for timing recommendations",
+                    optimization: "Instant Pyth price feed, no contract address complexity"
                 }
             ],
 

@@ -78,18 +78,13 @@ export const PortfolioGetBalancesTool: McpTool = {
                 },
                 {
                     step: 4,
-                    action: "Calculate USD values for all holdings",
-                    tool: "cached_nodit_api",
+                    action: "Calculate USD values for all holdings using symbols",
+                    tool: "get_token_prices_by_symbols",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: { 
-                            contractAddresses: "Extract unique contracts from step 2 results",
-                            currency: "USD"
-                        }
+                        symbols: "Extract symbols from step 2 results (prioritize major tokens: ETH, BTC, USDC, USDT, MATIC, AVAX)",
+                        currency: "USD"
                     },
-                    expected_result: "USD prices for all tokens to calculate portfolio value"
+                    expected_result: "USD prices for supported tokens via Pyth"
                 }
             ],
 
@@ -187,7 +182,7 @@ export const PortfolioGetCrossChainTool: McpTool = {
             },
 
             execution_plan: {
-                parallel_chain_calls: chains.map((chain, index) => ({
+                parallel_chain_calls: chains.map((chain: any, index: number) => ({
                     chain,
                     parallel_group: index + 1,
                     calls: [
@@ -223,15 +218,10 @@ export const PortfolioGetCrossChainTool: McpTool = {
                     description: "Collect unique contract addresses from all chains and get prices",
                     per_chain_calls: chains.map((chain: any) => ({
                         chain,
-                        tool: "cached_nodit_api",
+                        tool: "get_token_prices_by_symbols",
                         parameters: {
-                            operation_id: "getTokenPricesByContracts",
-                            protocol: chain,
-                            network: "mainnet",
-                            request_body: {
-                                contractAddresses: `Extract contracts from ${chain} results`,
-                                currency: "USD"
-                            }
+                            symbols: `Extract symbols from ${chain} results (prioritize major tokens)`,
+                            currency: "USD"
                         }
                     }))
                 }

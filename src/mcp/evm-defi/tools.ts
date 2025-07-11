@@ -78,18 +78,13 @@ export const DefiGetPoolInfoTool: McpTool = {
                 },
                 {
                     step: 4,
-                    action: "Get current pool token price",
-                    tool: "cached_nodit_api",
+                    action: "Get current pool token price using symbol if available",
+                    tool: "get_token_prices_by_symbols",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: {
-                            contractAddresses: [pool_address],
-                            currency: "USD"
-                        }
+                        symbols: ["extract_symbol_from_metadata"],
+                        currency: "USD"
                     },
-                    purpose: "Get LP token valuation if available"
+                    purpose: "Get LP token valuation if symbol is supported by Pyth"
                 }
             ],
 
@@ -367,18 +362,13 @@ export const DefiAnalyzeDexActivityTool: McpTool = {
                 },
                 {
                     step: 3,
-                    action: "Get token prices for volume calculations",
-                    tool: "cached_nodit_api",
+                    action: "Get token prices for volume calculations using symbols",
+                    tool: "get_token_prices_by_symbols",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: {
-                            contractAddresses: token_pairs || "Extract from transfer data",
-                            currency: "USD"
-                        }
+                        symbols: "Extract symbols from transfer data or use major tokens [ETH, BTC, USDC, USDT]",
+                        currency: "USD"
                     },
-                    purpose: "Calculate USD trading volumes"
+                    purpose: "Calculate USD trading volumes using Pyth for major tokens"
                 }
             ],
 

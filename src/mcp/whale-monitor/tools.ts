@@ -69,18 +69,13 @@ export const WhaleGetLargeTransfersTool: McpTool = {
                 },
                 {
                     step: token_symbol && !contract_address ? 3 : 2,
-                    action: "Get token price for USD calculation",
-                    tool: "cached_nodit_api", 
+                    action: "Get token price for USD calculation using symbol",
+                    tool: "get_token_prices_by_symbols",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: {
-                            contractAddresses: [contract_address || "resolved_contract"],
-                            currency: "USD"
-                        }
+                        symbols: [token_symbol || "extract_symbol_from_metadata"],
+                        currency: "USD"
                     },
-                    purpose: "Get current token price to calculate USD values"
+                    purpose: "Get current token price to calculate USD values using Pyth (if supported)"
                 }
             ],
 
@@ -212,18 +207,13 @@ export const WhaleMonitorAddressTool: McpTool = {
                 },
                 {
                     step: 4,
-                    action: "Calculate portfolio values",
-                    tool: "cached_nodit_api",
+                    action: "Calculate portfolio values using symbols",
+                    tool: "get_token_prices_by_symbols",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: {
-                            contractAddresses: "Extract unique contracts from steps 1-2",
-                            currency: "USD"
-                        }
+                        symbols: "Extract symbols from tokens owned (prioritize major tokens: ETH, BTC, USDC, USDT)",
+                        currency: "USD"
                     },
-                    purpose: "Get current prices to calculate USD values"
+                    purpose: "Get current prices to calculate USD values using Pyth for major tokens"
                 }
             ],
 

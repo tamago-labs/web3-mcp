@@ -61,18 +61,13 @@ export const TokenGetOverviewTool: McpTool = {
                 },
                 {
                     step: token_symbol && !contract_address ? 3 : 2,
-                    action: "Get comprehensive price and market data",
-                    tool: "cached_nodit_api",
+                    action: "Get comprehensive price data using symbol-based approach",
+                    tool: "get_token_prices_by_symbols",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: {
-                            contractAddresses: [contract_address || "resolved_contract"],
-                            currency: "USD"
-                        }
+                        symbols: [token_symbol || "extract_symbol_from_metadata"],
+                        currency: "USD"
                     },
-                    expected_result: "Current price, 24h change, volume, market cap, trading data"
+                    expected_result: "Current price from Pyth (if supported) or resolution instructions"
                 },
                 {
                     step: token_symbol && !contract_address ? 4 : 3,
@@ -210,18 +205,14 @@ export const TokenSearchByNameTool: McpTool = {
                 },
                 {
                     step: 2,
-                    action: "Get price data for found tokens",
-                    tool: "cached_nodit_api",
+                    action: "Get price data for found tokens using hybrid approach",
+                    tool: "hybrid_token_prices",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: {
-                            contractAddresses: "Extract addresses from step 1 results (max 100)",
-                            currency: "USD"
-                        }
+                        contract_addresses: "Extract addresses from step 1 results (max 100)",
+                        chain: chain,
+                        currency: "USD"
                     },
-                    purpose: "Enrich results with current price and market data"
+                    purpose: "Enrich results with current price data using optimal data sources"
                 }
             ],
 

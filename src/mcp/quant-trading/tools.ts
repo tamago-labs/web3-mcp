@@ -47,18 +47,13 @@ export const QuantTokenScoringTool: McpTool = {
                 },
                 {
                     step: 2,
-                    action: "Get current market data and prices",
-                    tool: "cached_nodit_api",
+                    action: "Get current market data and prices using symbols",
+                    tool: "get_token_prices_by_symbols",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: {
-                            contractAddresses: tokens.slice(0, 100),
-                            currency: "USD"
-                        }
+                        symbols: "Extract symbols from step 1 metadata (prioritize major tokens: ETH, BTC, USDC, USDT)",
+                        currency: "USD"
                     },
-                    purpose: "Market cap filtering and price trend analysis"
+                    purpose: "Market cap filtering and price trend analysis using Pyth for major tokens"
                 },
                 {
                     step: 3,
@@ -244,18 +239,13 @@ export const QuantMomentumScannerTool: McpTool = {
                 },
                 {
                     step: 2,
-                    action: "Get market data for discovered tokens",
-                    tool: "cached_nodit_api",
+                    action: "Get market data for discovered tokens using symbols",
+                    tool: "get_token_prices_by_symbols",
                     parameters: {
-                        operation_id: "getTokenPricesByContracts",
-                        protocol: chain,
-                        network: "mainnet",
-                        request_body: {
-                            contractAddresses: "Extract from step 1 results",
-                            currency: "USD"
-                        }
+                        symbols: "Extract symbols from step 1 results (focus on major tokens: ETH, BTC, USDC, USDT)",
+                        currency: "USD"
                     },
-                    purpose: "Filter by volume and get price trend data"
+                    purpose: "Filter by volume and get price trend data using Pyth for supported tokens"
                 },
                 {
                     step: 3,
@@ -586,19 +576,14 @@ export const QuantArbitrageScannerTool: McpTool = {
                 action: `Scan ${chain} for token prices and liquidity`,
                 parallel_calls: [
                     {
-                        tool: "cached_nodit_api",
+                        tool: "get_token_prices_by_symbols",
                         parameters: {
-                            operation_id: "getTokenPricesByContracts",
-                            protocol: chain,
-                            network: "mainnet",
-                            request_body: {
-                                contractAddresses: token_pairs ? 
-                                    token_pairs.flatMap((pair: any) => [pair.token_a, pair.token_b]) :
-                                    "Discover from market data",
-                                currency: "USD"
-                            }
+                            symbols: token_pairs ?
+                                "Extract symbols from token pairs (prioritize major tokens: ETH, BTC, USDC, USDT)" :
+                                "Common trading symbols: [ETH, BTC, USDC, USDT, MATIC, AVAX]",
+                            currency: "USD"
                         },
-                        purpose: "Get current token prices for arbitrage calculation"
+                        purpose: "Get current token prices for arbitrage calculation using Pyth"
                     },
                     {
                         tool: "cached_nodit_api",
