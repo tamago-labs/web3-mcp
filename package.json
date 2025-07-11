@@ -38,6 +38,7 @@
   "homepage": "https://tamagolabs.com",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.2",
+    "@pythnetwork/hermes-client": "^2.0.0",
     "axios": "^1.10.0",
     "multiformats": "^9.9.0",
     "zod": "^3.24.3"

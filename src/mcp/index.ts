@@ -12,12 +12,12 @@ import * as BlockTools from './block-analytics';
 import * as EvmDefiTools from './evm-defi';
 import * as AptosDefiTools from './aptos-defi';
 import * as QuantTools from './quant-trading';
+import * as PythTools from './pyth-price-feeds';
 
 // Import Bitcoin-specific MCP server tools
 import * as BitcoinWalletTools from './bitcoin-wallet-analyzer';
 import * as BitcoinTxTools from './bitcoin-transaction-tracker';
 import * as BitcoinNetworkTools from './bitcoin-network-insights';
-
 
 import { agentMode } from '../config';
 
